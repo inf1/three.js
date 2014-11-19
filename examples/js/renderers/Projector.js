@@ -7,13 +7,11 @@
 THREE.RenderableObject = function () {
 
 	this.id = 0;
-
 	this.object = null;
 	this.z = 0;
 
 };
 
-//
 
 THREE.RenderableFace = function () {
 
@@ -36,7 +34,7 @@ THREE.RenderableFace = function () {
 
 };
 
-//
+
 
 THREE.RenderableVertex = function () {
 
@@ -55,7 +53,6 @@ THREE.RenderableVertex.prototype.copy = function ( vertex ) {
 
 };
 
-//
 
 THREE.RenderableLine = function () {
 
@@ -70,8 +67,6 @@ THREE.RenderableLine = function () {
 	this.z = 0;
 
 };
-
-//
 
 THREE.RenderableSprite = function () {
 
@@ -89,8 +84,6 @@ THREE.RenderableSprite = function () {
 	this.material = null;
 
 };
-
-//
 
 THREE.Projector = function () {
 
@@ -127,7 +120,6 @@ THREE.Projector = function () {
 	_clippedVertex1PositionScreen = new THREE.Vector4(),
 	_clippedVertex2PositionScreen = new THREE.Vector4();
 	
-	//
 
 	this.projectVector = function ( vector, camera ) {
 
@@ -149,8 +141,6 @@ THREE.Projector = function () {
 
 	};
 	
-	//
-
 	var RenderList = function () {
 
 		var normals = [];
@@ -217,7 +207,7 @@ THREE.Projector = function () {
 
 		var checkTriangleVisibility = function ( v1, v2, v3 ) {
 
-			if ( v1.visible === true || v2.visible === true || v3.visible === true ) return true;
+			if ( v1.visible === true || v2.visible === true || v3.visible === true ) {return true;}
 
 			_points3[ 0 ] = v1.positionScreen;
 			_points3[ 1 ] = v2.positionScreen;
@@ -260,7 +250,7 @@ THREE.Projector = function () {
 			var v2 = _vertexPool[ b ];
 			var v3 = _vertexPool[ c ];
 
-			if ( checkTriangleVisibility( v1, v2, v3 ) === false ) return;
+			if ( checkTriangleVisibility( v1, v2, v3 ) === false ) {return;}
 
 			if ( material.side === THREE.DoubleSide || checkBackfaceCulling( v1, v2, v3 ) === true ) {
 
@@ -329,8 +319,6 @@ THREE.Projector = function () {
 
 		_frustum.setFromMatrix( _viewProjectionMatrix );
 
-		//
-
 		_objectCount = 0;
 
 		_renderData.objects.length = 0;
@@ -344,7 +332,7 @@ THREE.Projector = function () {
 
 			} else if ( object instanceof THREE.Mesh || object instanceof THREE.Line || object instanceof THREE.Sprite ) {
 
-				if ( object.material.visible === false ) return;
+				if ( object.material.visible === false ){ return;}
 
 				if ( object.frustumCulled === false || _frustum.intersectsObject( object ) === true ) {
 
@@ -378,8 +366,6 @@ THREE.Projector = function () {
 
 		}
 
-		//
-
 		for ( var o = 0, ol = _renderData.objects.length; o < ol; o ++ ) {
 
 			var object = _renderData.objects[ o ].object;
@@ -398,7 +384,7 @@ THREE.Projector = function () {
 					var attributes = geometry.attributes;
 					var offsets = geometry.offsets;
 
-					if ( attributes.position === undefined ) continue;
+					if ( attributes.position === undefined ) {continue;}
 
 					var positions = attributes.position.array;
 
@@ -497,7 +483,7 @@ THREE.Projector = function () {
 							 ? objectMaterials.materials[ face.materialIndex ]
 							 : object.material;
 
-						if ( material === undefined ) continue;
+						if ( material === undefined ){ continue;}
 
 						var side = material.side;
 
@@ -550,13 +536,13 @@ THREE.Projector = function () {
 
 						}
 
-						if ( renderList.checkTriangleVisibility( v1, v2, v3 ) === false ) continue;
+						if ( renderList.checkTriangleVisibility( v1, v2, v3 ) === false ){ continue;}
 
 						var visible = renderList.checkBackfaceCulling( v1, v2, v3 );
 
 						if ( side !== THREE.DoubleSide ) {
-							if ( side === THREE.FrontSide && visible === false ) continue;
-							if ( side === THREE.BackSide && visible === true ) continue;
+							if ( side === THREE.FrontSide && visible === false ){continue;}
+							if ( side === THREE.BackSide && visible === true ) {continue;}
 						}
 
 						_face = getNextFaceInPool();
@@ -664,12 +650,12 @@ THREE.Projector = function () {
 
 					var vertices = object.geometry.vertices;
 
-					if ( vertices.length === 0 ) continue;
+					if ( vertices.length === 0 ) {continue;}
 
 					v1 = getNextVertexInPool();
 					v1.positionScreen.copy( vertices[ 0 ] ).applyMatrix4( _modelViewProjectionMatrix );
 
-					// Handle LineStrip and LinePieces
+					/* Handle LineStrip and LinePieces*/
 					var step = object.mode === THREE.LinePieces ? 2 : 1;
 
 					for ( var v = 1, vl = vertices.length; v < vl; v ++ ) {
@@ -677,7 +663,7 @@ THREE.Projector = function () {
 						v1 = getNextVertexInPool();
 						v1.positionScreen.copy( vertices[ v ] ).applyMatrix4( _modelViewProjectionMatrix );
 
-						if ( ( v + 1 ) % step > 0 ) continue;
+						if ( ( v + 1 ) % step > 0 ) {continue;}
 
 						v2 = _vertexPool[ _vertexCount - 2 ];
 
@@ -686,7 +672,7 @@ THREE.Projector = function () {
 
 						if ( clipLine( _clippedVertex1PositionScreen, _clippedVertex2PositionScreen ) === true ) {
 
-							// Perform the perspective divide
+							/* Perform the perspective divide*/
 							_clippedVertex1PositionScreen.multiplyScalar( 1 / _clippedVertex1PositionScreen.w );
 							_clippedVertex2PositionScreen.multiplyScalar( 1 / _clippedVertex2PositionScreen.w );
 
@@ -758,7 +744,7 @@ THREE.Projector = function () {
 
 	};
 
-	// Pools
+	/* Pools*/
 
 	function getNextObjectInPool() {
 
@@ -774,7 +760,7 @@ THREE.Projector = function () {
 
 		return _objectPool[ _objectCount ++ ];
 
-	}
+	};
 
 	function getNextVertexInPool() {
 
@@ -790,7 +776,7 @@ THREE.Projector = function () {
 
 		return _vertexPool[ _vertexCount ++ ];
 
-	}
+	};
 
 	function getNextFaceInPool() {
 
@@ -807,7 +793,7 @@ THREE.Projector = function () {
 		return _facePool[ _faceCount ++ ];
 
 
-	}
+	};
 
 	function getNextLineInPool() {
 
@@ -816,14 +802,14 @@ THREE.Projector = function () {
 			var line = new THREE.RenderableLine();
 			_linePool.push( line );
 			_linePoolLength ++;
-			_lineCount ++
+			_lineCount ++;
 			return line;
 
 		}
 
 		return _linePool[ _lineCount ++ ];
 
-	}
+	};
 
 	function getNextSpriteInPool() {
 
@@ -832,16 +818,15 @@ THREE.Projector = function () {
 			var sprite = new THREE.RenderableSprite();
 			_spritePool.push( sprite );
 			_spritePoolLength ++;
-			_spriteCount ++
+			_spriteCount ++;
 			return sprite;
 
 		}
 
 		return _spritePool[ _spriteCount ++ ];
 
-	}
+	};
 
-	//
 
 	function painterSort( a, b ) {
 
@@ -859,14 +844,14 @@ THREE.Projector = function () {
 
 		}
 
-	}
+	};
 
 	function clipLine( s1, s2 ) {
 
 		var alpha1 = 0, alpha2 = 1,
 
-		// Calculate the boundary coordinate of each vertex for the near and far clip planes,
-		// Z = -1 and Z = +1, respectively.
+		/* Calculate the boundary coordinate of each vertex for the near and far clip planes,
+		 Z = -1 and Z = +1, respectively.*/
 		bc1near =  s1.z + s1.w,
 		bc2near =  s2.z + s2.w,
 		bc1far =  - s1.z + s1.w,
@@ -874,52 +859,52 @@ THREE.Projector = function () {
 
 		if ( bc1near >= 0 && bc2near >= 0 && bc1far >= 0 && bc2far >= 0 ) {
 
-			// Both vertices lie entirely within all clip planes.
+			/* Both vertices lie entirely within all clip planes.*/
 			return true;
 
 		} else if ( ( bc1near < 0 && bc2near < 0 ) || ( bc1far < 0 && bc2far < 0 ) ) {
 
-			// Both vertices lie entirely outside one of the clip planes.
+			/* Both vertices lie entirely outside one of the clip planes.*/
 			return false;
 
 		} else {
 
-			// The line segment spans at least one clip plane.
+			/* The line segment spans at least one clip plane.*/
 
 			if ( bc1near < 0 ) {
 
-				// v1 lies outside the near plane, v2 inside
+				/* v1 lies outside the near plane, v2 inside*/
 				alpha1 = Math.max( alpha1, bc1near / ( bc1near - bc2near ) );
 
 			} else if ( bc2near < 0 ) {
 
-				// v2 lies outside the near plane, v1 inside
+				/* v2 lies outside the near plane, v1 inside*/
 				alpha2 = Math.min( alpha2, bc1near / ( bc1near - bc2near ) );
 
 			}
 
 			if ( bc1far < 0 ) {
 
-				// v1 lies outside the far plane, v2 inside
+				/* v1 lies outside the far plane, v2 inside*/
 				alpha1 = Math.max( alpha1, bc1far / ( bc1far - bc2far ) );
 
 			} else if ( bc2far < 0 ) {
 
-				// v2 lies outside the far plane, v2 inside
+				/* v2 lies outside the far plane, v2 inside*/
 				alpha2 = Math.min( alpha2, bc1far / ( bc1far - bc2far ) );
 
 			}
 
 			if ( alpha2 < alpha1 ) {
 
-				// The line segment spans two boundaries, but is outside both of them.
-				// (This can't happen when we're only clipping against just near/far but good
-				//  to leave the check here for future usage if other clip planes are added.)
+				/* The line segment spans two boundaries, but is outside both of them.
+				 (This can't happen when we're only clipping against just near/far but good
+				  to leave the check here for future usage if other clip planes are added.)*/
 				return false;
 
 			} else {
 
-				// Update the s1 and s2 vertices to match the clipped line segment.
+				/* Update the s1 and s2 vertices to match the clipped line segment.*/
 				s1.lerp( s2, alpha1 );
 				s2.lerp( s1, 1 - alpha2 );
 
@@ -929,6 +914,6 @@ THREE.Projector = function () {
 
 		}
 
-	}
+	};
 
 };
